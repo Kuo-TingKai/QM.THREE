@@ -254,6 +254,9 @@
             font-size: 0.8em;
             text-align: center;
             z-index: 100;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 5px 10px;
+            border-radius: 5px;
         }
         
         /* Responsive Design */
@@ -335,18 +338,7 @@
             }
             
             .camera-hint {
-                position: absolute;
-                top: 50%;
-                left: 50%;
-                transform: translate(-50%, -50%);
-                font-size: 0.7em;
-                z-index: 200;
-                background: rgba(0, 0, 0, 0.8);
-                padding: 8px 15px;
-                border-radius: 8px;
-                order: 2;
-                pointer-events: none;
-                opacity: 0.8;
+                display: none;
             }
             
             .ui-toggle-btn {
@@ -383,9 +375,7 @@
             }
             
             .camera-hint {
-                top: 50%;
-                font-size: 0.6em;
-                padding: 6px 12px;
+                display: none;
             }
             
             .tech-button {
