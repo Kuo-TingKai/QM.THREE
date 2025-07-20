@@ -278,10 +278,16 @@
         
         @media (max-width: 768px) {
             .ui-container {
-                position: relative;
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
                 display: flex;
                 flex-direction: column;
                 padding: 10px;
+                background: rgba(0, 0, 0, 0.3);
+                backdrop-filter: blur(5px);
             }
             
             #info {
@@ -291,6 +297,7 @@
                 right: auto;
                 max-width: none;
                 margin-bottom: 10px;
+                order: 1;
             }
             
             #controls {
@@ -300,6 +307,7 @@
                 left: auto;
                 min-width: auto;
                 margin-bottom: 10px;
+                order: 2;
             }
             
             .tech-panel {
@@ -319,8 +327,19 @@
             }
             
             .camera-hint {
+                position: absolute;
                 bottom: 10px;
+                left: 50%;
+                transform: translateX(-50%);
                 font-size: 0.7em;
+                z-index: 200;
+                background: rgba(0, 0, 0, 0.7);
+                padding: 5px 10px;
+                border-radius: 5px;
+            }
+            
+            .ui-toggle-btn {
+                display: block;
             }
             
             #info h3 {
@@ -335,6 +354,7 @@
         @media (max-width: 480px) {
             .ui-container {
                 padding: 5px;
+                background: rgba(0, 0, 0, 0.5);
             }
             
             #info {
@@ -346,6 +366,12 @@
             #controls {
                 left: auto;
                 right: auto;
+            }
+            
+            .camera-hint {
+                bottom: 5px;
+                font-size: 0.6em;
+                padding: 3px 8px;
             }
             
             .tech-panel {
@@ -411,6 +437,35 @@
             }
         }
         
+        /* UI Toggle Button */
+        
+        .ui-toggle-btn {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 300;
+            background: rgba(0, 128, 255, 0.8);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            font-size: 20px;
+            cursor: pointer;
+            display: none;
+            transition: all 0.3s ease;
+        }
+        
+        .ui-toggle-btn:hover {
+            background: rgba(0, 128, 255, 1);
+            transform: scale(1.1);
+        }
+        
+        .ui-container.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+        
         /* High DPI displays */
         
         @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
@@ -423,7 +478,7 @@
             }
         }
     </style>
-  <script type="module" crossorigin src="/QM.THREE/assets/index-DuxL11C2.js"></script>
+  <script type="module" crossorigin src="/QM.THREE/assets/index-CcE2Dg0j.js"></script>
   <link rel="modulepreload" crossorigin href="/QM.THREE/assets/three-DTRIzpL-.js">
 </head>
 <body>
@@ -486,6 +541,8 @@
     <div class="camera-hint">
         <p>🖱️ Mouse Drag to Rotate | 🔍 Scroll to Zoom | 📱 Touch to Pan</p>
     </div>
+    
+    <button id="toggleUI" class="ui-toggle-btn">📱</button>
     
 </body>
 </html> 

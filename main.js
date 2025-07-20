@@ -360,6 +360,17 @@ class QuantumVisualizer {
             this.displayMode = e.target.value;
             this.updateDisplayMode();
         });
+        
+        // UI Toggle control for mobile
+        const toggleBtn = document.getElementById('toggleUI');
+        const uiContainer = document.querySelector('.ui-container');
+        
+        if (toggleBtn && uiContainer) {
+            toggleBtn.addEventListener('click', () => {
+                uiContainer.classList.toggle('hidden');
+                toggleBtn.textContent = uiContainer.classList.contains('hidden') ? '📱' : '👁️';
+            });
+        }
     }
     
     animate() {
