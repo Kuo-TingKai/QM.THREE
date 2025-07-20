@@ -11,7 +11,29 @@ class QuantumVisualizer {
     constructor() {
         this.scene = new THREE.Scene();
         this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-        this.renderer = new THREE.WebGLRenderer({ antialias: true });
+        
+        // Add WebGL error handling and fallback
+        let renderer;
+        try {
+            renderer = new THREE.WebGLRenderer({ 
+                antialias: true,
+                alpha: true,
+                powerPreference: "high-performance"
+            });
+            
+            // Test WebGL context
+            const canvas = renderer.domElement;
+            const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+            if (!gl) {
+                throw new Error('WebGL not supported');
+            }
+        } catch (error) {
+            console.error('WebGL initialization failed:', error);
+            this.showWebGLError();
+            return;
+        }
+        
+        this.renderer = renderer;
         this.clock = new THREE.Clock();
         this.controls = null;
         
@@ -33,6 +55,29 @@ class QuantumVisualizer {
         this.init();
         this.setupControls();
         this.animate();
+    }
+    
+    showWebGLError() {
+        const errorDiv = document.createElement('div');
+        errorDiv.style.cssText = `
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(255, 0, 0, 0.9);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            z-index: 1000;
+            font-family: 'Orbitron', monospace;
+        `;
+        errorDiv.innerHTML = `
+            <h3>WebGL Error</h3>
+            <p>Your browser or environment doesn't support WebGL.</p>
+            <p>Try using a different browser or device.</p>
+        `;
+        document.body.appendChild(errorDiv);
     }
     
     init() {
@@ -62,6 +107,9 @@ class QuantumVisualizer {
         
         // Handle window resize
         window.addEventListener('resize', () => this.onWindowResize());
+        
+        // Add console log for debugging
+        console.log('QuantumVisualizer initialized successfully');
     }
     
     setupScene() {
@@ -353,6 +401,31 @@ class QuantumVisualizer {
 }
 
 // Initialize the visualizer when the page loads
-window.addEventListener('load', () => {
-    new QuantumVisualizer();
+window.addEventListener('DOMContentLoaded', () => {
+    console.log('DOM loaded, initializing QuantumVisualizer...');
+    try {
+        new QuantumVisualizer();
+    } catch (error) {
+        console.error('Failed to initialize QuantumVisualizer:', error);
+        const errorDiv = document.createElement('div');
+        errorDiv.style.cssText = `
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(255, 0, 0, 0.9);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            z-index: 1000;
+            font-family: 'Orbitron', monospace;
+        `;
+        errorDiv.innerHTML = `
+            <h3>Initialization Error</h3>
+            <p>Failed to initialize the visualization.</p>
+            <p>Error: ${error.message}</p>
+        `;
+        document.body.appendChild(errorDiv);
+    }
 }); 
