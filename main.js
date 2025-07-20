@@ -110,11 +110,15 @@ class QuantumVisualizer {
         this.controls.screenSpacePanning = false;
         this.controls.maxPolarAngle = Math.PI;
         
-        // Setup camera with responsive positioning (after controls are initialized)
-        this.setupCamera();
+        // Store initial camera position for reset functionality
+        this.initialCameraPosition = new THREE.Vector3();
+        this.initialCameraTarget = new THREE.Vector3();
         
-        // Detect browser environment
-        this.detectBrowserEnvironment();
+        // Detect browser environment first
+        const isInAppBrowser = this.detectBrowserEnvironment();
+        
+        // Setup camera with responsive positioning (after controls are initialized)
+        this.setupCamera(isInAppBrowser);
         
         // Setup scene
         this.setupScene();
@@ -127,7 +131,7 @@ class QuantumVisualizer {
         console.log('QuantumVisualizer initialized successfully');
     }
     
-    setupCamera() {
+    setupCamera(isInAppBrowser = false) {
         // Check if mobile device
         const isMobile = window.innerWidth <= 768;
         
@@ -139,6 +143,17 @@ class QuantumVisualizer {
             // Adjust orbit controls for mobile
             this.controls.minDistance = 2;
             this.controls.maxDistance = 15;
+            
+            // Special settings for in-app browsers
+            if (isInAppBrowser) {
+                this.controls.enableDamping = false; // Disable damping to prevent auto-reset
+                this.controls.enablePan = true;
+                this.controls.enableZoom = true;
+                this.controls.enableRotate = true;
+                this.controls.rotateSpeed = 0.5; // Slower rotation for better control
+                this.controls.zoomSpeed = 0.5; // Slower zoom for better control
+                this.controls.panSpeed = 0.5; // Slower pan for better control
+            }
         } else {
             // Desktop: closer view for better detail
             this.camera.position.set(2, 2, 2);
@@ -148,6 +163,10 @@ class QuantumVisualizer {
             this.controls.minDistance = 1;
             this.controls.maxDistance = 10;
         }
+        
+        // Store initial position
+        this.initialCameraPosition.copy(this.camera.position);
+        this.initialCameraTarget.copy(this.controls.target);
     }
     
     detectBrowserEnvironment() {
@@ -501,7 +520,8 @@ class QuantumVisualizer {
         this.renderer.setSize(window.innerWidth, window.innerHeight);
         
         // Re-adjust camera position for mobile/desktop
-        this.setupCamera();
+        const isInAppBrowser = this.detectBrowserEnvironment();
+        this.setupCamera(isInAppBrowser);
     }
 }
 
