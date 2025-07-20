@@ -17,16 +17,9 @@ class QuantumVisualizer {
         try {
             renderer = new THREE.WebGLRenderer({ 
                 antialias: true,
-                alpha: true,
-                powerPreference: "high-performance"
+                alpha: false
             });
             
-            // Test WebGL context
-            const canvas = renderer.domElement;
-            const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
-            if (!gl) {
-                throw new Error('WebGL not supported');
-            }
         } catch (error) {
             console.error('WebGL initialization failed:', error);
             this.showWebGLError();
