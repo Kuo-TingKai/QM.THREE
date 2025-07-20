@@ -48,11 +48,24 @@
             100% { left: 100%; }
         }
         
+        .ui-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: 100;
+            pointer-events: none;
+        }
+        
+        .ui-container > * {
+            pointer-events: auto;
+        }
+        
         #info {
             position: absolute;
             top: 20px;
             left: 20px;
-            z-index: 100;
             max-width: 350px;
         }
         
@@ -242,60 +255,222 @@
             text-align: center;
             z-index: 100;
         }
+        
+        /* Responsive Design */
+        @media (max-width: 1200px) {
+            #info {
+                max-width: 300px;
+            }
+            
+            #controls {
+                min-width: 250px;
+            }
+            
+            .tech-button {
+                padding: 8px 12px;
+                font-size: 0.7em;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .ui-container {
+                position: relative;
+                display: flex;
+                flex-direction: column;
+                padding: 10px;
+            }
+            
+            #info {
+                position: relative;
+                top: auto;
+                left: auto;
+                right: auto;
+                max-width: none;
+                margin-bottom: 10px;
+            }
+            
+            #controls {
+                position: relative;
+                top: auto;
+                right: auto;
+                left: auto;
+                min-width: auto;
+                margin-bottom: 10px;
+            }
+            
+            .tech-panel {
+                margin-bottom: 10px;
+            }
+            
+            .control-group {
+                margin-bottom: 10px;
+            }
+            
+            .tech-button {
+                padding: 10px 15px;
+                font-size: 0.8em;
+                margin-bottom: 5px;
+                width: 100%;
+                margin-right: 0;
+            }
+            
+            .camera-hint {
+                bottom: 10px;
+                font-size: 0.7em;
+            }
+            
+            #info h3 {
+                font-size: 1em;
+            }
+            
+            #info p {
+                font-size: 0.8em;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .ui-container {
+                padding: 5px;
+            }
+            
+            #info {
+                top: auto;
+                left: auto;
+                right: auto;
+            }
+            
+            #controls {
+                left: auto;
+                right: auto;
+            }
+            
+            .tech-panel {
+                padding: 10px;
+            }
+            
+            .tech-button {
+                padding: 8px 12px;
+                font-size: 0.7em;
+            }
+            
+            .camera-hint {
+                bottom: 5px;
+                font-size: 0.6em;
+            }
+            
+            select, input[type="range"] {
+                padding: 6px;
+                font-size: 0.8em;
+            }
+        }
+        
+        /* Mobile-first layout for very small screens */
+        @media (max-width: 360px) {
+            body {
+                font-size: 14px;
+            }
+            
+            .tech-panel {
+                padding: 8px;
+            }
+            
+            .control-group label {
+                font-size: 0.7em;
+            }
+            
+            .value-display {
+                font-size: 0.7em;
+                min-width: 25px;
+            }
+        }
+        
+        /* Landscape orientation for mobile */
+        @media (max-height: 500px) and (orientation: landscape) {
+            #info {
+                position: absolute;
+                top: 5px;
+                left: 5px;
+                max-width: 200px;
+            }
+            
+            #controls {
+                position: absolute;
+                top: 5px;
+                right: 5px;
+                min-width: 200px;
+            }
+            
+            .camera-hint {
+                display: none;
+            }
+        }
+        
+        /* High DPI displays */
+        @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+            .tech-panel {
+                border-width: 0.5px;
+            }
+            
+            .tech-button {
+                border-radius: 3px;
+            }
+        }
     </style>
 </head>
 <body>
-                <div id="info" class="tech-panel">
-        <h3>Quantum Mechanics Visualization</h3>
-        <p><span class="status-indicator status-active"></span><strong>System Status:</strong> Running</p>
-        <p><strong>Red Grid:</strong> Real Part Re(ψ)</p>
-        <p><strong>Blue Grid:</strong> Imaginary Part Im(ψ)</p>
-        <p><strong>Green Surface:</strong> Probability Density |ψ|²</p>
-        <p><strong>Gray Boundary:</strong> 2D Infinite Potential Well</p>
-        <p><strong>Time:</strong><span id="time" class="value-display">0.00</span> s</p>
-        <p><strong>Quantum Numbers:</strong> nx = <span id="currentNx" class="value-display">3</span>, ny = <span id="currentNy" class="value-display">4</span></p>
-    </div>
-    
-    <div id="controls" class="tech-panel">
-        <div class="control-group">
-            <label>X Quantum Number nx:</label>
-            <select id="quantumNumberX">
-                <option value="1">nx = 1</option>
-                <option value="2">nx = 2</option>
-                <option value="3" selected>nx = 3</option>
-                <option value="4">nx = 4</option>
-            </select>
+    <div class="ui-container">
+        <div id="info" class="tech-panel">
+            <h3>Quantum Mechanics Visualization</h3>
+            <p><span class="status-indicator status-active"></span><strong>System Status:</strong> Running</p>
+            <p><strong>Red Grid:</strong> Real Part Re(ψ)</p>
+            <p><strong>Blue Grid:</strong> Imaginary Part Im(ψ)</p>
+            <p><strong>Green Surface:</strong> Probability Density |ψ|²</p>
+            <p><strong>Gray Boundary:</strong> 2D Infinite Potential Well</p>
+            <p><strong>Time:</strong><span id="time" class="value-display">0.00</span> s</p>
+            <p><strong>Quantum Numbers:</strong> nx = <span id="currentNx" class="value-display">3</span>, ny = <span id="currentNy" class="value-display">4</span></p>
         </div>
         
-        <div class="control-group">
-            <label>Y Quantum Number ny:</label>
-            <select id="quantumNumberY">
-                <option value="1">ny = 1</option>
-                <option value="2">ny = 2</option>
-                <option value="3">ny = 3</option>
-                <option value="4" selected>ny = 4</option>
-            </select>
-        </div>
-        
-        <div class="control-group">
-            <label>Time Evolution Speed:</label>
-            <input type="range" id="timeSpeed" min="0.1" max="5" step="0.1" value="1">
-            <span id="speedValue" class="value-display">1.0</span>
-        </div>
-        
-        <div class="control-group">
-            <button id="pauseBtn" class="tech-button">Pause</button>
-            <button id="resetBtn" class="tech-button">Reset</button>
-        </div>
-        
-        <div class="control-group">
-            <label>Display Mode:</label>
-            <select id="displayMode">
-                <option value="all">Show All</option>
-                <option value="real">Real Part Only (Red Grid)</option>
-                <option value="imaginary">Imaginary Part Only (Blue Grid)</option>
-                <option value="probability">Probability Only (Green Surface)</option>
-            </select>
+        <div id="controls" class="tech-panel">
+            <div class="control-group">
+                <label>X Quantum Number nx:</label>
+                <select id="quantumNumberX">
+                    <option value="1">nx = 1</option>
+                    <option value="2">nx = 2</option>
+                    <option value="3" selected>nx = 3</option>
+                    <option value="4">nx = 4</option>
+                </select>
+            </div>
+            
+            <div class="control-group">
+                <label>Y Quantum Number ny:</label>
+                <select id="quantumNumberY">
+                    <option value="1">ny = 1</option>
+                    <option value="2">ny = 2</option>
+                    <option value="3">ny = 3</option>
+                    <option value="4" selected>ny = 4</option>
+                </select>
+            </div>
+            
+            <div class="control-group">
+                <label>Time Evolution Speed:</label>
+                <input type="range" id="timeSpeed" min="0.1" max="5" step="0.1" value="1">
+                <span id="speedValue" class="value-display">1.0</span>
+            </div>
+            
+            <div class="control-group">
+                <button id="pauseBtn" class="tech-button">Pause</button>
+                <button id="resetBtn" class="tech-button">Reset</button>
+            </div>
+            
+            <div class="control-group">
+                <label>Display Mode:</label>
+                <select id="displayMode">
+                    <option value="all">Show All</option>
+                    <option value="real">Real Part Only (Red Grid)</option>
+                    <option value="imaginary">Imaginary Part Only (Blue Grid)</option>
+                    <option value="probability">Probability Only (Green Surface)</option>
+                </select>
+            </div>
         </div>
     </div>
     
