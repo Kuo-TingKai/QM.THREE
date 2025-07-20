@@ -81,9 +81,8 @@ class QuantumVisualizer {
         this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
         document.body.appendChild(this.renderer.domElement);
         
-        // Setup camera with better angle for 3D visualization
-        this.camera.position.set(2, 2, 2);
-        this.camera.lookAt(0, 0, 0);
+        // Setup camera with responsive positioning
+        this.setupCamera();
         
         // Setup orbit controls for manual camera adjustment
         this.controls = new OrbitControls(this.camera, this.renderer.domElement);
@@ -103,6 +102,29 @@ class QuantumVisualizer {
         
         // Add console log for debugging
         console.log('QuantumVisualizer initialized successfully');
+    }
+    
+    setupCamera() {
+        // Check if mobile device
+        const isMobile = window.innerWidth <= 768;
+        
+        if (isMobile) {
+            // Mobile: further back and higher up to avoid UI panels
+            this.camera.position.set(3, 3, 4);
+            this.camera.lookAt(0, 0, 0);
+            
+            // Adjust orbit controls for mobile
+            this.controls.minDistance = 2;
+            this.controls.maxDistance = 15;
+        } else {
+            // Desktop: closer view for better detail
+            this.camera.position.set(2, 2, 2);
+            this.camera.lookAt(0, 0, 0);
+            
+            // Standard orbit controls
+            this.controls.minDistance = 1;
+            this.controls.maxDistance = 10;
+        }
     }
     
     setupScene() {
@@ -401,6 +423,9 @@ class QuantumVisualizer {
         this.camera.aspect = window.innerWidth / window.innerHeight;
         this.camera.updateProjectionMatrix();
         this.renderer.setSize(window.innerWidth, window.innerHeight);
+        
+        // Re-adjust camera position for mobile/desktop
+        this.setupCamera();
     }
 }
 
