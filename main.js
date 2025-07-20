@@ -15,9 +15,31 @@ class QuantumVisualizer {
         // Add WebGL error handling and fallback
         let renderer;
         try {
+            // Try different WebGL contexts for better compatibility
+            const canvas = document.createElement('canvas');
+            const gl = canvas.getContext('webgl') || 
+                      canvas.getContext('experimental-webgl') || 
+                      canvas.getContext('webgl2');
+            
+            if (!gl) {
+                throw new Error('WebGL not supported');
+            }
+            
+            // Test WebGL capabilities
+            const maxTextureSize = gl.getParameter(gl.MAX_TEXTURE_SIZE);
+            const maxViewportDims = gl.getParameter(gl.MAX_VIEWPORT_DIMS);
+            
+            console.log('WebGL capabilities:', {
+                maxTextureSize,
+                maxViewportDims,
+                userAgent: navigator.userAgent
+            });
+            
             renderer = new THREE.WebGLRenderer({ 
                 antialias: true,
-                alpha: false
+                alpha: false,
+                powerPreference: "default",
+                failIfMajorPerformanceCaveat: false
             });
             
         } catch (error) {
@@ -91,6 +113,9 @@ class QuantumVisualizer {
         // Setup camera with responsive positioning (after controls are initialized)
         this.setupCamera();
         
+        // Detect browser environment
+        this.detectBrowserEnvironment();
+        
         // Setup scene
         this.setupScene();
         this.createWaveFunction();
@@ -123,6 +148,59 @@ class QuantumVisualizer {
             this.controls.minDistance = 1;
             this.controls.maxDistance = 10;
         }
+    }
+    
+    detectBrowserEnvironment() {
+        const userAgent = navigator.userAgent.toLowerCase();
+        const isInAppBrowser = 
+            userAgent.includes('messenger') || 
+            userAgent.includes('facebook') || 
+            userAgent.includes('instagram') || 
+            userAgent.includes('whatsapp') ||
+            userAgent.includes('line') ||
+            userAgent.includes('telegram');
+        
+        if (isInAppBrowser) {
+            console.log('Detected in-app browser, applying compatibility mode');
+            this.showInAppBrowserWarning();
+        }
+        
+        return isInAppBrowser;
+    }
+    
+    showInAppBrowserWarning() {
+        const warningDiv = document.createElement('div');
+        warningDiv.style.cssText = `
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(255, 165, 0, 0.95);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            z-index: 1000;
+            font-family: 'Orbitron', monospace;
+            max-width: 300px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+        `;
+        warningDiv.innerHTML = `
+            <h3>⚠️ 瀏覽器相容性</h3>
+            <p>檢測到您正在使用應用內瀏覽器。</p>
+            <p>建議使用系統瀏覽器以獲得最佳體驗。</p>
+            <button onclick="this.parentElement.remove()" style="
+                background: #0080ff;
+                color: white;
+                border: none;
+                padding: 10px 20px;
+                border-radius: 5px;
+                margin-top: 10px;
+                cursor: pointer;
+                font-family: 'Orbitron', monospace;
+            ">知道了</button>
+        `;
+        document.body.appendChild(warningDiv);
     }
     
     setupScene() {
