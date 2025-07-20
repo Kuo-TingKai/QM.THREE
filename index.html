@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quantum Mechanics Schrödinger Equation Visualization</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap');
+        
+        body {
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #16213e 100%);
+            font-family: 'Orbitron', monospace;
+            overflow: hidden;
+            color: #0080ff;
+        }
+        
+        /* Glowing border effect */
+        .tech-panel {
+            background: rgba(0, 20, 40, 0.9);
+            border: 1px solid #0080ff;
+            border-radius: 10px;
+            box-shadow: 
+                0 0 20px rgba(0, 128, 255, 0.3),
+                inset 0 0 20px rgba(0, 128, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 15px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .tech-panel::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0, 128, 255, 0.2), transparent);
+            animation: scan 3s linear infinite;
+        }
+        
+        @keyframes scan {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+        
+        #info {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            z-index: 100;
+            max-width: 350px;
+        }
+        
+        #info h3 {
+            margin: 0 0 15px 0;
+            color: #0080ff;
+            text-shadow: 0 0 10px rgba(0, 128, 255, 0.5);
+            font-weight: 700;
+            font-size: 1.2em;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+        
+        #info p {
+            margin: 8px 0;
+            font-size: 0.9em;
+            line-height: 1.4;
+        }
+        
+        #info strong {
+            color: #40a9ff;
+            text-shadow: 0 0 5px rgba(64, 169, 255, 0.5);
+        }
+        
+        #controls {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            z-index: 100;
+            min-width: 280px;
+        }
+        
+        .control-group {
+            margin-bottom: 15px;
+            position: relative;
+        }
+        
+        .control-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #0080ff;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 0.8em;
+        }
+        
+        select, input[type="range"] {
+            width: 100%;
+            background: rgba(0, 20, 40, 0.8);
+            border: 1px solid #0080ff;
+            border-radius: 5px;
+            color: #0080ff;
+            padding: 8px;
+            font-family: 'Orbitron', monospace;
+            font-size: 0.9em;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+        
+        select:focus, input[type="range"]:focus {
+            box-shadow: 0 0 15px rgba(0, 128, 255, 0.5);
+            border-color: #40a9ff;
+        }
+        
+        select option {
+            background: #0a0a0a;
+            color: #0080ff;
+        }
+        
+        input[type="range"] {
+            -webkit-appearance: none;
+            height: 6px;
+            background: rgba(0, 128, 255, 0.2);
+            border-radius: 3px;
+            outline: none;
+        }
+        
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 18px;
+            height: 18px;
+            background: #0080ff;
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 0 10px rgba(0, 128, 255, 0.5);
+        }
+        
+        input[type="range"]::-moz-range-thumb {
+            width: 18px;
+            height: 18px;
+            background: #0080ff;
+            border-radius: 50%;
+            cursor: pointer;
+            border: none;
+            box-shadow: 0 0 10px rgba(0, 128, 255, 0.5);
+        }
+        
+        .tech-button {
+            background: linear-gradient(45deg, #0080ff, #0056b3);
+            color: #fff;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-right: 8px;
+            font-family: 'Orbitron', monospace;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 0.8em;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .tech-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.5s ease;
+        }
+        
+        .tech-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 128, 255, 0.4);
+        }
+        
+        .tech-button:hover::before {
+            left: 100%;
+        }
+        
+        .tech-button:active {
+            transform: translateY(0);
+        }
+        
+        .value-display {
+            display: inline-block;
+            background: rgba(0, 128, 255, 0.1);
+            border: 1px solid #0080ff;
+            border-radius: 3px;
+            padding: 2px 6px;
+            margin-left: 8px;
+            font-size: 0.8em;
+            min-width: 30px;
+            text-align: center;
+        }
+        
+        /* Status indicators */
+        .status-indicator {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            margin-right: 8px;
+            animation: pulse 2s infinite;
+        }
+        
+        .status-active {
+            background: #0080ff;
+            box-shadow: 0 0 10px rgba(0, 128, 255, 0.5);
+        }
+        
+        .status-paused {
+            background: #ff6b6b;
+            box-shadow: 0 0 10px rgba(255, 107, 107, 0.5);
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        
+        /* Camera controls hint */
+        .camera-hint {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: rgba(0, 128, 255, 0.7);
+            font-size: 0.8em;
+            text-align: center;
+            z-index: 100;
+        }
+    </style>
+</head>
+<body>
+                <div id="info" class="tech-panel">
+        <h3>Quantum Mechanics Visualization</h3>
+        <p><span class="status-indicator status-active"></span><strong>System Status:</strong> Running</p>
+        <p><strong>Red Grid:</strong> Real Part Re(ψ)</p>
+        <p><strong>Blue Grid:</strong> Imaginary Part Im(ψ)</p>
+        <p><strong>Green Surface:</strong> Probability Density |ψ|²</p>
+        <p><strong>Gray Boundary:</strong> 2D Infinite Potential Well</p>
+        <p><strong>Time:</strong><span id="time" class="value-display">0.00</span> s</p>
+        <p><strong>Quantum Numbers:</strong> nx = <span id="currentNx" class="value-display">1</span>, ny = <span id="currentNy" class="value-display">1</span></p>
+    </div>
+    
+    <div id="controls" class="tech-panel">
+        <div class="control-group">
+            <label>X Quantum Number nx:</label>
+            <select id="quantumNumberX">
+                <option value="1">nx = 1</option>
+                <option value="2">nx = 2</option>
+                <option value="3">nx = 3</option>
+                <option value="4">nx = 4</option>
+            </select>
+        </div>
+        
+        <div class="control-group">
+            <label>Y Quantum Number ny:</label>
+            <select id="quantumNumberY">
+                <option value="1">ny = 1</option>
+                <option value="2">ny = 2</option>
+                <option value="3">ny = 3</option>
+                <option value="4">ny = 4</option>
+            </select>
+        </div>
+        
+        <div class="control-group">
+            <label>Time Evolution Speed:</label>
+            <input type="range" id="timeSpeed" min="0.1" max="5" step="0.1" value="1">
+            <span id="speedValue" class="value-display">1.0</span>
+        </div>
+        
+        <div class="control-group">
+            <button id="pauseBtn" class="tech-button">Pause</button>
+            <button id="resetBtn" class="tech-button">Reset</button>
+        </div>
+        
+        <div class="control-group">
+            <label>Display Mode:</label>
+            <select id="displayMode">
+                <option value="all">Show All</option>
+                <option value="real">Real Part Only (Red Grid)</option>
+                <option value="imaginary">Imaginary Part Only (Blue Grid)</option>
+                <option value="probability">Probability Only (Green Surface)</option>
+            </select>
+        </div>
+    </div>
+    
+    <div class="camera-hint">
+        <p>🖱️ Mouse Drag to Rotate | 🔍 Scroll to Zoom | 📱 Touch to Pan</p>
+    </div>
+    
+    <script type="module" src="/main.js"></script>
+</body>
+</html> 
