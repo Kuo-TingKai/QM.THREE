@@ -33,8 +33,8 @@ class QuantumVisualizer {
         this.time = 0;
         this.timeSpeed = 1.0;
         this.isPaused = false;
-        this.quantumNumberX = 1;
-        this.quantumNumberY = 1;
+        this.quantumNumberX = 3;
+        this.quantumNumberY = 4;
         this.displayMode = 'all';
         
         this.points = [];
@@ -81,8 +81,8 @@ class QuantumVisualizer {
         this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
         document.body.appendChild(this.renderer.domElement);
         
-        // Setup camera with better angle for 2D visualization
-        this.camera.position.set(0, 0, 3);
+        // Setup camera with better angle for 3D visualization
+        this.camera.position.set(2, 2, 2);
         this.camera.lookAt(0, 0, 0);
         
         // Setup orbit controls for manual camera adjustment
