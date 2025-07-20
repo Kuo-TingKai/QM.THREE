@@ -81,17 +81,15 @@ class QuantumVisualizer {
         this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
         document.body.appendChild(this.renderer.domElement);
         
-        // Setup camera with responsive positioning
-        this.setupCamera();
-        
         // Setup orbit controls for manual camera adjustment
         this.controls = new OrbitControls(this.camera, this.renderer.domElement);
         this.controls.enableDamping = true;
         this.controls.dampingFactor = 0.05;
         this.controls.screenSpacePanning = false;
-        this.controls.minDistance = 1;
-        this.controls.maxDistance = 10;
         this.controls.maxPolarAngle = Math.PI;
+        
+        // Setup camera with responsive positioning (after controls are initialized)
+        this.setupCamera();
         
         // Setup scene
         this.setupScene();
